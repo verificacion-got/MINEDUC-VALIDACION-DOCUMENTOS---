@@ -3,256 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validación de Certificado - Portal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Descarga de Documento - UTFSM</title>
+    
+    <!-- Script oficial de Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    
     <style>
-        /* ESTILOS GENERALES */
+        /* Estilos generales */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
             color: #333;
-            line-height: 1.5;
+            margin: 0; 
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; 
+        }
+
+        /* Contenedor que envuelve el formulario */
+        .content-wrapper {
+            padding: 40px 20px;
+            flex: 1; 
         }
 
         .container {
-            max-width: 480px;
+            max-width: 700px; 
             margin: 0 auto;
-            background-color: #fff;
-            min-height: 100vh;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-top: 6px solid #002855;
+        }
+        
+        /* --- ESTILOS DEL LOGO SUPERIOR --- */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-container img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        h2 {
+            color: #004b87;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        
+        /* Layout en cuadrícula (Grid) */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .form-group {
             display: flex;
             flex-direction: column;
         }
-
-        /* Header */
-        .header {
-            padding: 15px 20px;
-            background: #fff;
-            border-bottom: 1px solid #eee;
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
         }
-
-        .logo-text { font-size: 1.5rem; margin: 0; }
-        .logo-blue { color: #0056b3; font-weight: normal; }
-        .logo-red { color: #d9534f; font-weight: bold; }
-
-        .page-title {
-            color: #0056b3;
-            font-size: 1.3rem;
-            margin: 5px 0 15px 0;
-            font-weight: normal;
+        input[type="text"], 
+        input[type="number"], 
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+            width: 100%;
         }
-
-        .section-subtitle {
-            color: #0056b3;
-            font-size: 1.1rem;
-            margin: 0;
-            font-weight: normal;
-        }
-
-        /* Caja de contenido principal (gris) */
-        .login-box {
-            background-color: #f2f2f2;
-            margin: 20px;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            text-align: center; /* Centrar contenido */
-        }
-
-        .login-intro {
-            font-size: 1.1rem; /* Un poco más grande como en la foto */
-            color: #777;
-            margin-bottom: 25px;
-            text-align: left;
-            font-weight: 300;
+        input:focus, select:focus {
+            border-color: #F2A900;
+            outline: none;
         }
         
-        .login-intro strong {
-            font-weight: bold;
-            color: #555;
-        }
-
-        /* ESTILOS DEL FALSO RECAPTCHA */
-        .recaptcha-container {
-            background: #f9f9f9;
-            border: 1px solid #d3d3d3;
-            border-radius: 3px;
-            box-shadow: 0 0 4px 1px rgba(0,0,0,0.08);
-            display: inline-flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 12px;
-            width: 300px; /* Ancho estándar de recaptcha */
-            max-width: 100%;
-            box-sizing: border-box;
-            margin: 0 auto;
-        }
-
-        .recaptcha-left {
+        /* --- ESTILOS PARA EL CUADRADO DEL RECAPTCHA --- */
+        .captcha-container {
+            margin: 30px 0;
             display: flex;
-            align-items: center;
-        }
-
-        .recaptcha-checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #c1c1c1;
-            border-radius: 2px;
-            background-color: #fff;
-            margin-right: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
             justify-content: center;
         }
-
-        .recaptcha-checkbox:hover {
-            border: 2px solid #b2b2b2;
+        .captcha-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: inline-block; 
         }
 
-        .recaptcha-label {
-            font-family: Roboto, helvetica, arial, sans-serif;
-            font-size: 14px;
-            font-weight: 400;
-            color: #000;
+        /* --- BOTÓN AMARILLO --- */
+        .btn-submit {
+            background-color: #dfa03a;
+            color: #333;
+            border: none;
+            padding: 12px 20px;
+            width: 100%;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #c78d30;
         }
 
-        .recaptcha-logo-col {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-left: 10px;
-        }
-
-        .recaptcha-icon {
-            width: 32px;
-            height: 32px;
-            background-image: url('https://www.gstatic.com/recaptcha/api2/logo_48.png');
-            background-size: 32px;
-            background-repeat: no-repeat;
-            opacity: 0.5;
-        }
-
-        .recaptcha-text-small {
-            font-size: 10px;
-            color: #555;
+        /* --- NUEVO: INFORMACIÓN DE LA UNIVERSIDAD --- */
+        .university-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea; /* Línea separadora sutil */
             text-align: center;
-            margin-top: 2px;
-            line-height: 10px;
-        }
-
-        /* Animación del Spinner */
-        .spinner {
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #3498db;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 1s linear infinite;
-            display: none;
-        }
-
-        /* Checkmark verde */
-        .checkmark {
-            color: #009688;
-            font-size: 20px;
-            display: none;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Footer */
-        .footer-simple-text {
-            padding: 20px 15px;
-            font-size: 0.9rem;
-            color: #777;
-            background: #f9f9f9;
-            margin-top: auto;
-        }
-        
-        .ministerio-info {
-            margin-top: 15px;
-            font-size: 0.85rem;
+            font-size: 13px;
             color: #666;
-            line-height: 1.4;
+            line-height: 1.6;
+        }
+        .university-info strong {
+            color: #002855;
+            font-size: 14px;
+        }
+        .university-info a {
+            color: #004b87;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .university-info a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- ESTILOS DE LA IMAGEN INFERIOR --- */
+        .footer-image {
+            width: 100%;
+            display: block;
+            height: auto;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1 class="logo-text">
-                <span class="logo-blue">Ayuda</span><span class="logo-red">Mineduc</span>
-            </h1>
-            <h2 class="page-title">Certificados en tu Celular</h2>
-            <h3 class="section-subtitle">Validación de Certificado</h3>
-        </div>
-
-        <div class="login-box">
-            <p class="login-intro">
-                <strong>Estimado Usuario(a):</strong> Complete el desafío Recaptcha para continuar hacia la validacion del certificado.
-            </p>
-
-            <div class="recaptcha-container">
-                <div class="recaptcha-left">
-                    <div class="recaptcha-checkbox" id="recaptchaBox" onclick="activarCaptcha()">
-                        <div class="spinner" id="recaptchaSpinner"></div>
-                        <i class="fa-solid fa-check checkmark" id="recaptchaCheck"></i>
-                    </div>
-                    <span class="recaptcha-label">No soy un robot</span>
-                </div>
+    <div class="content-wrapper">
+        <div class="container">
+            <!-- Contenedor del Logo -->
+            <div class="logo-container">
+                <img src="logof.jpg" alt="Logo Universidad Técnica Federico Santa María">
+            </div>
+            
+            <h2>Universidad Técnica Federico Santa María</h2>
+            
+            <form id="formularioUSM">
                 
-                <div class="recaptcha-logo-col">
-                    <div class="recaptcha-icon"></div>
-                    <div class="recaptcha-text-small">reCAPTCHA</div>
-                    <div class="recaptcha-text-small" style="font-size: 8px;">Privacidad - Condiciones</div>
+                <!-- Fila 1: Nombre y RUT -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo</label>
+                        <input type="text" id="nombre" name="nombre" value="Luis Andres Fuenzalida Flores" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rut">RUT</label>
+                        <input type="text" id="rut" name="rut" value="12.865.440-2" required>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="footer-simple-text">
-            <div class="ministerio-info">
-                <strong>Ministerio de Educación</strong><br>
-                <span style="color: #0056b3;">Gobierno de Chile</span><br>
-                Dirección: Av. Libertador Bernardo O'Higgins 1371.<br>
-                Teléfono: +56 2 24066000<br>
-                Versión 1.37.0
+                <!-- Fila 2: Sede y Carrera -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sede">Sede</label>
+                        <select id="sede" name="sede" required>
+                            <option value="" disabled>Seleccione...</option>
+                            <option value="Valparaíso" selected>Valparaíso</option>
+                            <option value="Federico USM">Federico USM (Casa Central)</option>
+                            <option value="San Joaquín">San Joaquín</option>
+                            <option value="Vitacura">Vitacura</option>
+                            <option value="Viña del Mar">Viña del Mar</option>
+                            <option value="Concepción">Concepción</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="carrera">Carrera</label>
+                        <input type="text" id="carrera" name="carrera" value="TÉCNICO EN ELECTRICIDAD" required>
+                    </div>
+                </div>
+
+                <!-- Fila 3: Año, Modalidad y Nota -->
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="egreso">Año de egreso</label>
+                        <input type="text" id="egreso" name="egreso" value="22 de febrero de 2022" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalidad">Modalidad de estudios</label>
+                        <select id="modalidad" name="modalidad" required>
+                            <option value="" disabled>Modalidad...</option>
+                            <option value="Diurna" selected>Diurna</option>
+                            <option value="Vespertina">Vespertina</option>
+                            <option value="Online">Online</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nota">Nota final</label>
+                        <input type="text" id="nota" name="nota" value="6,1" required>
+                    </div>
+                </div>
+
+                <!-- Contenedor del reCAPTCHA dentro del Cuadrado -->
+                <div class="captcha-container">
+                    <div class="captcha-box">
+                        <!-- Reemplaza TU_CLAVE_DE_SITIO_AQUI con tu Site Key de Google reCAPTCHA -->
+                        <div class="g-recaptcha" data-sitekey="TU_CLAVE_DE_SITIO_AQUI"></div>
+                    </div>
+                </div>
+
+                <!-- Botón de Envío (Cuadro Amarillo) -->
+                <button type="submit" class="btn-submit">Validar y Descargar Documento</button>
+            </form>
+
+            <!-- NUEVO: Información de la Universidad debajo del botón -->
+            <div class="university-info">
+                <strong>Universidad Técnica Federico Santa María</strong><br>
+                Sede Casa Central: Avenida España 1680, Valparaíso, Chile<br>
+                Teléfono: +56 32 265 4000 | Web: <a href="https://usm.cl" target="_blank">www.usm.cl</a>
             </div>
+
         </div>
     </div>
 
+    <!-- Imagen agregada al final que va de esquina a esquina -->
+    <img src="ima.png" alt="Imagen Inferior" class="footer-image">
+
     <script>
-        function activarCaptcha() {
-            var box = document.getElementById("recaptchaBox");
-            var spinner = document.getElementById("recaptchaSpinner");
-            var check = document.getElementById("recaptchaCheck");
+        document.getElementById('formularioUSM').addEventListener('submit', function(event) {
+            event.preventDefault(); 
 
-            // Evitar que se active dos veces
-            if (box.getAttribute("data-checked") === "true") return;
+            var response = grecaptcha.getResponse();
 
-            // 1. Mostrar spinner de carga
-            spinner.style.display = "block";
+            if (response.length === 0) {
+                alert("Error: Por favor, resuelva el reCAPTCHA para verificar que no es un robot.");
+                return;
+            }
+
+            alert("Validación exitosa. Su documento comenzará a descargarse en breve.");
             
-            // 2. Esperar 1 segundo (simulando conexión con Google)
-            setTimeout(function() {
-                spinner.style.display = "none";     // Ocultar spinner
-                check.style.display = "block";      // Mostrar check verde
-                box.style.border = "none";          // Quitar borde gris del cuadrado
-                box.setAttribute("data-checked", "true"); // Marcar como listo
+            const urlDocumento = 'ruta/al/documento_usm.pdf'; 
+            
+            const link = document.createElement('a');
+            link.href = urlDocumento;
+            link.download = 'Certificado_Academico_USM.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
 
-                // 3. Redirigir después de medio segundo
-                setTimeout(function() {
-                    window.location.href = "resultadomine.html";
-                }, 800);
-
-            }, 1500); // Tiempo que tarda el spinner girando
-        }
+            grecaptcha.reset();
+        });
     </script>
-
 </body>
 </html>
